@@ -7,209 +7,123 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id             String      @id @default(cuid())
-  email          String      @unique
-  name           String?
-  avatarUrl      String?
-  memberships    Membership[]
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
-}
-
 model Property {
-  id           String        @id @default(cuid())
-  name         String
-  address      String?
-  currency     String        @default("PEN")
-  units        Unit[]
-  memberships  Membership[]
-  transactions Transaction[]
-  invoices     Invoice[]
-  documents    Document[]
+  id            String          @id @default(cuid())
+  name          String
+  address       String?
+  currency      String          @default("PEN")
+  units         Unit[]
+  transactions  Transaction[]
+  invoices      Invoice[]
+  documents     Document[]
   announcements Announcement[]
-  events       Event[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  events        Event[]
+  inventory     InventoryItem[]
+  notifications Notification[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 }
 
 model Unit {
-  id          String      @id @default(cuid())
+  id          String    @id @default(cuid())
   label       String
-  coefficient Decimal     @default(1)
-  property    Property    @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  coefficient Decimal   @default(1)
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   propertyId  String
-  memberships Membership[]
   invoices    Invoice[]
-}
-
-model Membership {
-  id         String    @id @default(cuid())
-  role       MembershipRole
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String
-  property   Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  propertyId String
-  unit       Unit?     @relation(fields: [unitId], references: [id], onDelete: Cascade)
-  unitId     String?
-  createdAt  DateTime  @default(now())
-}
-
-enum MembershipRole {
-  SUPER_ADMIN
-  PROPERTY_ADMIN
-  RESIDENT
-  STAFF
-}
-
-model AccountCategory {
-  id          String   @id @default(cuid())
-  name        String
-  type        CategoryType
-  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  propertyId  String
-  transactions Transaction[]
-}
-
-enum CategoryType {
-  INCOME
-  EXPENSE_FIXED
-  EXPENSE_VARIABLE
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Transaction {
-  id              String          @id @default(cuid())
-  amount          Decimal
-  occurredAt      DateTime
-  description     String?
-  type            CategoryType
-  property        Property        @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  propertyId      String
-  category        AccountCategory? @relation(fields: [categoryId], references: [id])
-  categoryId      String?
-  createdBy       Membership?      @relation(fields: [createdById], references: [id])
-  createdById     String?
-  attachments     Attachment[]
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-}
-
-model RecurringExpense {
-  id          String       @id @default(cuid())
-  name        String
+  id          String   @id @default(cuid())
   amount      Decimal
-  frequency   RecurrenceInterval
-  startDate   DateTime
-  endDate     DateTime?
-  property    Property     @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  occurredAt  DateTime
+  description String?
+  type        String   @default("INCOME")
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   propertyId  String
-  category    AccountCategory? @relation(fields: [categoryId], references: [id])
-  categoryId  String?
-  transactions Transaction[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-}
-
-enum RecurrenceInterval {
-  MONTHLY
-  BIMONTHLY
-  QUARTERLY
-  YEARLY
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Invoice {
-  id          String     @id @default(cuid())
-  period      DateTime
-  amountDue   Decimal    @default(0)
-  amountPaid  Decimal    @default(0)
-  status      InvoiceStatus @default(PENDING)
-  summary     String?
-  property    Property   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  propertyId  String
-  unit        Unit       @relation(fields: [unitId], references: [id], onDelete: Cascade)
-  unitId      String
-  payments    Payment[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-}
+  id         String   @id @default(cuid())
+  period     DateTime
+  amountDue  Decimal  @default(0)
+  amountPaid Decimal  @default(0)
+  status     String   @default("PENDING")
+  summary    String?
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId String
+  unit       Unit     @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  unitId     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-enum InvoiceStatus {
-  PENDING
-  PARTIALLY_PAID
-  PAID
-}
-
-model Payment {
-  id          String     @id @default(cuid())
-  amount      Decimal
-  paidAt      DateTime   @default(now())
-  method      PaymentMethod?
-  notes       String?
-  invoice     Invoice    @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  invoiceId   String
-  attachments Attachment[]
-}
-
-enum PaymentMethod {
-  CASH
-  BANK_TRANSFER
-  CREDIT_CARD
-  DIGITAL_WALLET
+  @@unique([unitId, period])
 }
 
 model Document {
-  id          String     @id @default(cuid())
+  id          String   @id @default(cuid())
   title       String
   description String?
   url         String
-  category    DocumentCategory
-  property    Property   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  category    String   @default("OTHER")
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   propertyId  String
-  createdBy   Membership? @relation(fields: [createdById], references: [id])
-  createdById String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-}
-
-enum DocumentCategory {
-  STATUTE
-  REGULATION
-  CONTRACT
-  MINUTE
-  OTHER
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Announcement {
-  id          String     @id @default(cuid())
+  id          String   @id @default(cuid())
   title       String
   content     String
-  publishedAt DateTime   @default(now())
-  property    Property   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  publishedAt DateTime @default(now())
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   propertyId  String
-  createdBy   Membership? @relation(fields: [createdById], references: [id])
-  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Event {
-  id          String     @id @default(cuid())
+  id          String    @id @default(cuid())
   title       String
   description String?
   startsAt    DateTime
   endsAt      DateTime?
-  recurring   Boolean    @default(false)
-  property    Property   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  recurring   Boolean   @default(false)
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   propertyId  String
-  createdBy   Membership? @relation(fields: [createdById], references: [id])
-  createdById String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
-model Attachment {
-  id            String      @id @default(cuid())
-  url           String
-  filename      String
-  transaction   Transaction? @relation(fields: [transactionId], references: [id], onDelete: Cascade)
-  transactionId String?
-  payment       Payment?     @relation(fields: [paymentId], references: [id], onDelete: Cascade)
-  paymentId     String?
-  createdAt     DateTime    @default(now())
+model InventoryItem {
+  id           String    @id @default(cuid())
+  name         String
+  category     String
+  purchaseDate DateTime?
+  value        Decimal?
+  condition    String?
+  notes        String?
+  photoUrl     String?
+  property     Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId   String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Notification {
+  id          String    @id @default(cuid())
+  subject     String
+  message     String
+  audience    String    @default("ALL_RESIDENTS")
+  channel     String    @default("IN_APP")
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId  String
+  createdAt   DateTime  @default(now())
 }

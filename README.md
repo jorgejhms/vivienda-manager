@@ -19,7 +19,7 @@ Aplicación web moderna para la administración integral de edificios y comunida
 
    ```bash
    cp .env.example .env
-   npx prisma migrate dev --name init
+   npx prisma migrate dev --name demo_modules
    ```
 
 3. Ejecuta el entorno de desarrollo:
@@ -28,7 +28,19 @@ Aplicación web moderna para la administración integral de edificios y comunida
    npm run dev
    ```
 
-La aplicación quedará disponible en `http://localhost:3000`.
+La aplicación quedará disponible en `http://localhost:3000`. El landing principal se mantiene en `/` y la experiencia funcional de demo está disponible en `/demo`.
+
+### Demo funcional
+
+La ruta `/demo` levanta una versión navegable del panel administrativo con todas las funciones clave:
+
+- **Finanzas**: registro de ingresos/egresos, cálculo automático de cuotas por coeficiente y actualización del estado de recibos.
+- **Inventario**: alta rápida de activos comunes con seguimiento de fechas, estado y notas.
+- **Biblioteca documental**: almacenamiento de reglamentos, estatutos, contratos y actas con enlaces públicos.
+- **Calendario y noticias**: anuncios internos, registro de actas y eventos recurrentes.
+- **Notificaciones**: simulación de alertas in-app/correo filtradas por audiencia.
+
+La base de datos se auto pobla con información de ejemplo mediante `ensureDemoData` al acceder por primera vez, por lo que no es necesario ejecutar un seed manual.
 
 ## Estructura principal
 

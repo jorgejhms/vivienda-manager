@@ -1,0 +1,155 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+:root {
+  --background: 225 33% 98%;
+  --foreground: 224 40% 12%;
+  --muted: 220 25% 80%;
+  --muted-foreground: 224 15% 38%;
+  --border: 223 33% 88%;
+  --surface: 0 0% 100%;
+  --surface-elevated: 224 40% 99%;
+  --primary: 221 83% 53%;
+  --primary-foreground: 267 83% 65%;
+  --secondary: 162 66% 45%;
+  --accent: 43 96% 56%;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+.dark {
+  --background: 229 30% 10%;
+  --foreground: 214 95% 96%;
+  --muted: 227 19% 18%;
+  --muted-foreground: 215 20% 65%;
+  --border: 224 19% 26%;
+  --surface: 230 40% 12%;
+  --surface-elevated: 230 40% 16%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 267 91% 64%;
+  --secondary: 162 66% 45%;
+  --accent: 43 96% 56%;
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+a {
+  color: inherit;
+}
+
+.bg-background {
+  background-color: hsl(var(--background));
+}
+
+.bg-surface {
+  background-color: hsl(var(--surface));
+}
+
+.bg-surface-elevated {
+  background-color: hsl(var(--surface-elevated));
+}
+
+.text-foreground {
+  color: hsl(var(--foreground));
+}
+
+.text-muted-foreground {
+  color: hsl(var(--muted-foreground));
+}
+
+.text-primary {
+  color: hsl(var(--primary));
+}
+
+.text-secondary {
+  color: hsl(var(--secondary));
+}
+
+.text-accent {
+  color: hsl(var(--accent));
+}
+
+.bg-primary {
+  background-color: hsl(var(--primary));
+}
+
+.bg-secondary {
+  background-color: hsl(var(--secondary));
+}
+
+.bg-accent {
+  background-color: hsl(var(--accent));
+}
+
+.from-primary {
+  --tw-gradient-from: hsl(var(--primary));
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(255, 255, 255, 0));
+}
+
+.from-secondary {
+  --tw-gradient-from: hsl(var(--secondary));
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(255, 255, 255, 0));
+}
+
+.from-primary\/10 {
+  --tw-gradient-from: hsla(var(--primary), 0.1);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(255, 255, 255, 0));
+}
+
+.to-primary-foreground {
+  --tw-gradient-to: hsl(var(--primary-foreground));
+}
+
+.to-secondary {
+  --tw-gradient-to: hsl(var(--secondary));
+}
+
+.bg-primary\/10 {
+  background-color: hsla(var(--primary), 0.1);
+}
+
+.bg-secondary\/10 {
+  background-color: hsla(var(--secondary), 0.1);
+}
+
+.text-primary\/70 {
+  color: hsla(var(--primary), 0.7);
+}
+
+.shadow-primary\/40 {
+  --tw-shadow-color: hsla(var(--primary), 0.4);
+}
+
+.shadow-secondary\/40 {
+  --tw-shadow-color: hsla(var(--secondary), 0.4);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

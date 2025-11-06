@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   ArrowRight,
   BarChart3,
@@ -96,11 +97,19 @@ export default function HomePage() {
                 Vivienda Manager centraliza las finanzas, documentos y comunicación de tu comunidad en una sola plataforma, diseñada para equipos modernos y residentes móviles.
               </p>
               <div className="flex flex-wrap items-center gap-4">
-                <Button size="lg">Solicitar demo</Button>
-                <Button variant="ghost" size="lg" className="gap-2">
+                <Link
+                  href="/demo"
+                  className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-primary to-primary-foreground px-6 py-3 text-base font-semibold text-white shadow-lg shadow-primary/40 transition hover:opacity-90"
+                >
+                  Solicitar demo
+                </Link>
+                <Link
+                  href="/demo#finanzas"
+                  className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-base font-semibold text-foreground transition hover:bg-surface-elevated hover:text-primary"
+                >
                   Explorar funcionalidades
                   <ArrowRight className="h-5 w-5" />
-                </Button>
+                </Link>
               </div>
               <div className="grid grid-cols-3 gap-6 rounded-3xl border border-border bg-surface-elevated px-6 py-6 shadow-inner">
                 {stats.map((item) => (
